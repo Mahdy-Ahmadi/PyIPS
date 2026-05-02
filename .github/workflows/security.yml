@@ -1,0 +1,13 @@
+name: Security Scan
+on: [push]
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+      - name: Run Dependabot
+        uses: dependabot/dependabot-core@main
+      - name: Run CodeQL
+        uses: github/codeql-action/analyze@v2
