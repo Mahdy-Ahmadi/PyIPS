@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+venv/
+env/
+logs/
+reports/*.html
+reports/*.csv
+*.pcap
+config/ips_config_local.yaml
+*.log
+.DS_Store
+.vscode/
+.idea/
+*.db
