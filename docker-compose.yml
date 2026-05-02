@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  timescaledb:
+    image: timescale/timescaledb:latest-pg14
+    environment:
+      POSTGRES_PASSWORD: pyips_secure_pass
+      POSTGRES_DB: pyips
+    volumes:
+      - timescale_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - pyips-net
+
+  redis:
+    image: redis:7-alpine
+    command: redis-server --requirepass pyips_redis_pass
+    ports:
+      - "6379:6379"
+    networks:
+      - pyips-net
+
+  pyips-pro:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile
+    privileged: true
+    network_mode: host
+    volumes:
+      - ./config:/app/config
+      - ./logs:/app/logs
+      - /sys/fs/bpf:/sys/fs/bpf
+    environment:
+      - RUST_LOG=info
+      - DATABASE_URL=postgresql://postgres:pyips_secure_pass@localhost:5432/pyips
+      - REDIS_URL=redis://:pyips_redis_pass@localhost:6379
+    depends_on:
+      - timescaledb
+      - redis
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - pyips-net
+    depends_on:
+      - timescaledb
+
+networks:
+  pyips-net:
+    driver: bridge
+
+volumes:
+  timescale_data:
+  grafana_data:
