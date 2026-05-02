@@ -1,0 +1,27 @@
+name: Rust CI
+
+on:
+  push:
+    paths:
+      - 'rust-core/**'
+  pull_request:
+    paths:
+      - 'rust-core/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - name: Build Rust core
+        run: |
+          cd rust-core
+          cargo build --release
+          cargo test
+      - name: Check memory safety
+        run: |
+          cd rust-core
+          cargo audit
