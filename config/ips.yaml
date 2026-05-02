@@ -1,0 +1,15 @@
+network:
+  interface: "eth0"
+  bpf_prog: "/sys/fs/bpf/pyips_xdp"
+
+rules:
+  path: "/app/config/rules/emerging-all.rules"
+  reload_interval_sec: 300
+
+detection:
+  pattern_match:
+    algorithm: "aho-corasick"
+    max_patterns: 50000
+  anomaly:
+    threshold: 0.85
+   
