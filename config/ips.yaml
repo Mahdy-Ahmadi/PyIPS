@@ -12,4 +12,36 @@ detection:
     max_patterns: 50000
   anomaly:
     threshold: 0.85
-   
+    window_sec: 60
+  ml:
+    model_path: "/app/models/exported/anomaly_model.json"
+    inference_timeout_ms: 10
+
+blocking:
+  method: "xdp"
+  duration_sec: 3600
+  max_ips: 100000
+
+timescale:
+  host: "localhost"
+  port: 5432
+  database: "pyips"
+  user: "postgres"
+  password: "pyips_secure_pass"
+
+redis:
+  url: "redis://:pyips_redis_pass@localhost:6379/0"
+
+misp:
+  enabled: true
+  url: "https://misp.example.com"
+  api_key: "YOUR_API_KEY"
+
+logging:
+  level: "INFO"
+  format: "json"
+  output: "stdout"
+  
+monitoring:
+  prometheus_port: 9090
+  health_check_port: 8080
